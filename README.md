@@ -57,6 +57,7 @@ java App
 ```
 
 ## Input/Output Example
+```
 ---------------------------------------------------------------------------
 INPUT: java App
 
@@ -694,3 +695,4 @@ INPUT: no
 
 OUTPUT: 
 Thanks for playing! Goodbye!
+```

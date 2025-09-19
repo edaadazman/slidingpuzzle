@@ -9,10 +9,15 @@
 ---------------------------------------------------------------------------
 
 App.java: Main entry point that starts the sliding puzzle game with a Scanner for user input.
+
 Board.java: Board is an interface that defines common board operations like dimensions, adjacency checking, and validation for checking if game is solved.
+
 BoardGame.java: This is the abstract base class implementing a template for board games with functionality for game looping, counting moves, and replay.
+
 Player.java: Handles player information and input operations, providing a clean abstraction for user interaction.
+
 SlidingPuzzleBoard.java: Implementation of the sliding puzzle board with tile management, shuffling the board, and validating moves.
+
 SlidingPuzzleGame.java: Sliding puzzle specific game logic extending BoardGame with setup, move parsing, and special commands like shuffle.
 
 ## Notes

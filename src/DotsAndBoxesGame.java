@@ -4,10 +4,12 @@ import java.util.Arrays;
 public class DotsAndBoxesGame extends BoardGame {
     private DotsAndBoxesBoard dotsBoard;
     private List<String> playerNames;
+    private boolean currentPlayerScored;
 
     public DotsAndBoxesGame(Player player1, Player player2) {
         super(Arrays.asList(player1, player2));
         this.playerNames = new ArrayList<>();
+        this.currentPlayerScored = false;
     }
 
     @Override
@@ -120,10 +122,11 @@ public class DotsAndBoxesGame extends BoardGame {
             if (playerScoreAfter > playerScoreBefore) {
                 int boxesScored = playerScoreAfter - playerScoreBefore;
                 System.out.println(currentPlayerName + " completed " + boxesScored + " box(es)! Go again!");
-                // Don't switch players - same player goes again
+                // Player scored - they get another turn
+                currentPlayerScored = true;
             } else {
-                // Switch to next player
-                switchToNextPlayer();
+                // Player didn't score - normal turn switch will happen
+                currentPlayerScored = false;
             }
 
             return true;
@@ -169,6 +172,16 @@ public class DotsAndBoxesGame extends BoardGame {
         }
 
         return message.toString();
+    }
+
+    @Override
+    protected void handlePlayerSwitch() {
+        // Only switch players if the current player didn't score
+        if (!currentPlayerScored) {
+            switchToNextPlayer();
+        }
+        // Reset the flag for the next move
+        currentPlayerScored = false;
     }
 
 }

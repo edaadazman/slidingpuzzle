@@ -1,15 +1,13 @@
 import java.util.*;
+import java.util.Arrays;
 
 public class DotsAndBoxesGame extends BoardGame {
     private DotsAndBoxesBoard dotsBoard;
-    private List<String> players;
-    private int currentPlayerIndex;
-    private String currentPlayer;
+    private List<String> playerNames;
 
-    public DotsAndBoxesGame(Player player) {
-        super(player);
-        this.players = new ArrayList<>();
-        this.currentPlayerIndex = 0;
+    public DotsAndBoxesGame(Player player1, Player player2) {
+        super(Arrays.asList(player1, player2));
+        this.playerNames = new ArrayList<>();
     }
 
     @Override
@@ -24,7 +22,7 @@ public class DotsAndBoxesGame extends BoardGame {
         // Get board rows
         int rows;
         do {
-            String input = player.getInput("Enter number of rows (2-10): ");
+            String input = getCurrentPlayer().getInput("Enter number of rows (2-10): ");
             try {
                 rows = Integer.parseInt(input);
                 if (rows >= 2 && rows <= 10)
@@ -39,7 +37,7 @@ public class DotsAndBoxesGame extends BoardGame {
         // Get board columns
         int cols;
         do {
-            String input = player.getInput("Enter number of columns (2-10): ");
+            String input = getCurrentPlayer().getInput("Enter number of columns (2-10): ");
             try {
                 cols = Integer.parseInt(input);
                 if (cols >= 2 && cols <= 10)
@@ -52,22 +50,25 @@ public class DotsAndBoxesGame extends BoardGame {
         } while (true);
 
         // Get player names
-        String player1 = player.getInput("Enter name for Player 1: ");
-        if (player1.trim().isEmpty()) {
-            player1 = "Player 1";
+        String player1Name = getCurrentPlayer().getInput("Enter name for Player 1: ");
+        if (player1Name.trim().isEmpty()) {
+            player1Name = "Player 1";
         }
 
-        String player2 = player.getInput("Enter name for Player 2: ");
-        if (player2.trim().isEmpty()) {
-            player2 = "Player 2";
+        String player2Name = getCurrentPlayer().getInput("Enter name for Player 2: ");
+        if (player2Name.trim().isEmpty()) {
+            player2Name = "Player 2";
         }
 
-        players.add(player1);
-        players.add(player2);
-        currentPlayer = players.get(0);
+        playerNames.add(player1Name);
+        playerNames.add(player2Name);
+
+        // Set player names
+        getPlayers().get(0).setName(player1Name);
+        getPlayers().get(1).setName(player2Name);
 
         // Create board
-        dotsBoard = new DotsAndBoxesBoard(rows, cols, players);
+        dotsBoard = new DotsAndBoxesBoard(rows, cols, playerNames);
 
         dotsBoard.displayBoard();
     }
@@ -107,21 +108,22 @@ public class DotsAndBoxesGame extends BoardGame {
         char type = (typeCode == 1) ? 'H' : 'V';
 
         // Get scores before the move
+        String currentPlayerName = getCurrentPlayer().getName();
         Map<String, Integer> scoresBefore = dotsBoard.getScores();
-        int playerScoreBefore = scoresBefore.get(currentPlayer);
+        int playerScoreBefore = scoresBefore.get(currentPlayerName);
 
-        if (dotsBoard.claimEdge(type, row, col, currentPlayer)) {
+        if (dotsBoard.claimEdge(type, row, col, currentPlayerName)) {
             // Check if player scored
             Map<String, Integer> scoresAfter = dotsBoard.getScores();
-            int playerScoreAfter = scoresAfter.get(currentPlayer);
+            int playerScoreAfter = scoresAfter.get(currentPlayerName);
 
             if (playerScoreAfter > playerScoreBefore) {
                 int boxesScored = playerScoreAfter - playerScoreBefore;
-                System.out.println(currentPlayer + " completed " + boxesScored + " box(es)! Go again!");
+                System.out.println(currentPlayerName + " completed " + boxesScored + " box(es)! Go again!");
                 // Don't switch players - same player goes again
             } else {
                 // Switch to next player
-                switchPlayer();
+                switchToNextPlayer();
             }
 
             return true;
@@ -146,7 +148,7 @@ public class DotsAndBoxesGame extends BoardGame {
 
     @Override
     protected String getInputPrompt() {
-        return "\n" + currentPlayer + "'s turn - Enter your move (H/V row col) or 'quit': ";
+        return "\n" + getCurrentPlayer().getName() + "'s turn - Enter your move (H/V row col) or 'quit': ";
     }
 
     @Override
@@ -162,15 +164,12 @@ public class DotsAndBoxesGame extends BoardGame {
 
         message.append("\nFinal Scores:\n");
         Map<String, Integer> finalScores = dotsBoard.getScores();
-        for (String playerName : players) {
+        for (String playerName : playerNames) {
             message.append(playerName).append(": ").append(finalScores.get(playerName)).append("\n");
         }
 
         return message.toString();
     }
 
-    private void switchPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-        currentPlayer = players.get(currentPlayerIndex);
-    }
+
 }

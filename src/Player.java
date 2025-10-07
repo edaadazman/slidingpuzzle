@@ -2,11 +2,16 @@ import java.util.Scanner;
 
 public class Player {
     private String name;
-    private final Scanner input;
+    protected final Scanner input;
 
     public Player(Scanner input) {
         this.input = input;
-        this.name = "Player"; 
+        this.name = "Player";
+    }
+
+    public Player(Scanner input, String name) {
+        this.input = input;
+        this.name = name != null ? name : "Player";
     }
 
     public String getName() {

@@ -1,15 +1,55 @@
 public abstract class BoardGame {
-    protected final Player player;
+    protected final java.util.List<Player> players;
+    protected int currentPlayerIndex;
     protected int moveCount;
 
+    // Constructor for single player games
     protected BoardGame(Player player) {
-        this.player = player;
+        this.players = new java.util.ArrayList<>();
+        this.players.add(player);
+        this.currentPlayerIndex = 0;
+        this.moveCount = 0;
+    }
+
+    // Constructor for multiplayer games
+    protected BoardGame(java.util.List<Player> players) {
+        if (players == null || players.isEmpty()) {
+            throw new IllegalArgumentException("At least one player required");
+        }
+        this.players = new java.util.ArrayList<>(players);
+        this.currentPlayerIndex = 0;
         this.moveCount = 0;
     }
 
     protected abstract Board getBoard();
 
     protected abstract void setup();
+
+    // Player management methods
+    protected Player getCurrentPlayer() {
+        return players.get(currentPlayerIndex);
+    }
+
+    protected void switchToNextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    }
+
+    protected boolean isMultiplayer() {
+        return players.size() > 1;
+    }
+
+    protected java.util.List<Player> getPlayers() {
+        return new java.util.ArrayList<>(players);
+    }
+
+    protected int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    // Override this method in subclasses for custom player switching logic
+    protected void handlePlayerSwitch() {
+        switchToNextPlayer();
+    }
 
     protected abstract Integer parseMove(String token);
 
@@ -62,7 +102,7 @@ public abstract class BoardGame {
             System.out.println(getBoard().toString());
 
             while (!getBoard().isSolved()) {
-                String line = player.getInput(getInputPrompt());
+                String line = getCurrentPlayer().getInput(getInputPrompt());
                 if (line == null) {
                     return;
                 }
@@ -84,6 +124,10 @@ public abstract class BoardGame {
                 boolean moved = applyMove(tile);
                 if (moved) {
                     moveCount++;
+                    // For single player games, don't switch players
+                    if (isMultiplayer()) {
+                        handlePlayerSwitch();
+                    }
                 } else {
                     System.out.println(getInvalidMoveMessage());
                 }
@@ -92,7 +136,7 @@ public abstract class BoardGame {
 
             if (getBoard().isSolved()) {
                 System.out.println(getVictoryMessage());
-                String response = player.getInput(getPlayAgainPrompt());
+                String response = getCurrentPlayer().getInput(getPlayAgainPrompt());
                 playAgain = "yes".equals(response);
             } else {
                 playAgain = false;

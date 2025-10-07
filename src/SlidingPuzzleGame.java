@@ -1,10 +1,8 @@
-import java.util.*;
-
 public class SlidingPuzzleGame extends BoardGame {
     private SlidingPuzzleBoard board;
 
-    public SlidingPuzzleGame(Scanner in) {
-        super(new Player(in));
+    public SlidingPuzzleGame(Player player) {
+        super(player);
     }
 
     @Override
@@ -24,9 +22,9 @@ public class SlidingPuzzleGame extends BoardGame {
 
     @Override
     protected void setup() {
-        String nameIn = player.getInput("Enter your name: ");
+        String nameIn = getCurrentPlayer().getInput("Enter your name: ");
         if (!nameIn.isEmpty()) {
-            player.setName(nameIn);
+            getCurrentPlayer().setName(nameIn);
         }
 
         int r = getValidSize(
@@ -35,12 +33,12 @@ public class SlidingPuzzleGame extends BoardGame {
                 "Enter number of cols (" + SlidingPuzzleBoard.MIN_SIZE + "-" + SlidingPuzzleBoard.MAX_SIZE + "): ");
 
         this.board = new SlidingPuzzleBoard(r, c);
-        System.out.println("Good luck, " + player.getName() + "!");
+        System.out.println("Good luck, " + getCurrentPlayer().getName() + "!");
     }
 
     private int getValidSize(String prompt) {
         while (true) {
-            String input = player.getInput(prompt);
+            String input = getCurrentPlayer().getInput(prompt);
             if (input == null) {
                 return 3;
             }

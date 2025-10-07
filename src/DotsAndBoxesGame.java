@@ -171,5 +171,4 @@ public class DotsAndBoxesGame extends BoardGame {
         return message.toString();
     }
 
-
 }

@@ -33,10 +33,10 @@ public class GameMenu {
 
     public void runGameLoop() {
         System.out.println("Welcome to the Game Collection!");
-        
+
         while (true) {
             int choice = getMenuChoice();
-            
+
             switch (choice) {
                 case 1:
                     runSlidingPuzzle();

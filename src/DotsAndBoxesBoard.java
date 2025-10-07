@@ -124,6 +124,14 @@ public class DotsAndBoxesBoard implements Board {
         return false;
     }
 
+    // Overloaded method that accepts EdgeMove
+    public boolean claimEdge(Edge.EdgeMove move, String playerName) {
+        if (move == null || !move.isValid()) {
+            return false;
+        }
+        return claimEdge(move.getType().getSymbol(), move.getRow(), move.getCol(), playerName);
+    }
+
     private int checkAndCompleteBoxes(char type, int row, int col, String playerName) {
         int completedBoxes = 0;
 

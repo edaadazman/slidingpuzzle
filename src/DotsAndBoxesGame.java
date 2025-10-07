@@ -75,46 +75,35 @@ public class DotsAndBoxesGame extends BoardGame {
         dotsBoard.displayBoard();
     }
 
+    // Store the last parsed move for use in applyMove
+    private Edge.EdgeMove lastParsedMove;
+
     @Override
     protected Integer parseMove(String input) {
-        String[] parts = input.split("\\s+");
-        if (parts.length != 3) {
-            return null;
+        Edge.EdgeMove move = Edge.parseMove(input);
+        if (move != null && move.isValid()) {
+            // Store the move for use in applyMove
+            lastParsedMove = move;
+            // Return a simple hash code as the move identifier
+            return move.hashCode();
         }
-
-        try {
-            char type = parts[0].toUpperCase().charAt(0);
-            if (type != 'H' && type != 'V') {
-                return null;
-            }
-
-            int row = Integer.parseInt(parts[1]);
-            int col = Integer.parseInt(parts[2]);
-
-            // Encode the move as a single integer (type + row*1000 + col)
-            // H = 1, V = 2
-            int typeCode = (type == 'H') ? 1 : 2;
-            return typeCode * 1000000 + row * 1000 + col;
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        lastParsedMove = null;
+        return null;
     }
 
     @Override
-    protected boolean applyMove(int encodedMove) {
-        // Decode the move
-        int typeCode = encodedMove / 1000000;
-        int remainder = encodedMove % 1000000;
-        int row = remainder / 1000;
-        int col = remainder % 1000;
-        char type = (typeCode == 1) ? 'H' : 'V';
+    protected boolean applyMove(int moveHash) {
+        // Use the stored EdgeMove instead of decoding
+        if (lastParsedMove == null || !lastParsedMove.isValid()) {
+            return false;
+        }
 
         // Get scores before the move
         String currentPlayerName = getCurrentPlayer().getName();
         Map<String, Integer> scoresBefore = dotsBoard.getScores();
         int playerScoreBefore = scoresBefore.get(currentPlayerName);
 
-        if (dotsBoard.claimEdge(type, row, col, currentPlayerName)) {
+        if (dotsBoard.claimEdge(lastParsedMove, currentPlayerName)) {
             // Check if player scored
             Map<String, Integer> scoresAfter = dotsBoard.getScores();
             int playerScoreAfter = scoresAfter.get(currentPlayerName);

@@ -1,22 +1,25 @@
 import java.util.*;
 
 public class SlidingPuzzleBoard implements Board {
+    public static final int MIN_SIZE = 2;
+    public static final int MAX_SIZE = 10;
+
     private final int rows;
     private final int cols;
-    private final int[][] grid;
+    private final Tile[][] grid;
 
     public SlidingPuzzleBoard(int rows, int cols) {
         this(rows, cols, true);
     }
 
     private SlidingPuzzleBoard(int rows, int cols, boolean shouldShuffle) {
-        if (rows < 2 || cols < 2)
-            throw new IllegalArgumentException("Minimum board size is 2x2.");
-        if (rows > 10 || cols > 10)
-            throw new IllegalArgumentException("Maximum board size is 10x10.");
+        if (rows < MIN_SIZE || cols < MIN_SIZE)
+            throw new IllegalArgumentException("Minimum board size is " + MIN_SIZE + "x" + MIN_SIZE + ".");
+        if (rows > MAX_SIZE || cols > MAX_SIZE)
+            throw new IllegalArgumentException("Maximum board size is " + MAX_SIZE + "x" + MAX_SIZE + ".");
         this.rows = rows;
         this.cols = cols;
-        this.grid = new int[rows][cols];
+        this.grid = new Tile[rows][cols];
         initSolved();
         if (shouldShuffle) {
             shuffle();
@@ -33,30 +36,47 @@ public class SlidingPuzzleBoard implements Board {
         return cols;
     }
 
+    @Override
+    public Piece getPieceAt(int row, int col) {
+        if (!isValidPosition(row, col)) {
+            return null;
+        }
+        return grid[row][col];
+    }
+
+    @Override
+    public void setPieceAt(int row, int col, Piece piece) {
+        if (isValidPosition(row, col) && piece instanceof Tile) {
+            grid[row][col] = (Tile) piece;
+        }
+    }
+
     private void initSolved() {
         int v = 1;
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                grid[r][c] = v++;
+                grid[r][c] = Tile.createNumberedTile(v++);
             }
         }
-        grid[rows - 1][cols - 1] = 0;
+        grid[rows - 1][cols - 1] = Tile.createBlankTile();
     }
 
     public void shuffle() {
         Random rng = new Random();
         for (int i = 0; i < 100; i++) {
-            int[] emptyPos = find(0);
-            List<int[]> adjacentTiles = getAdjacentTiles(emptyPos[0], emptyPos[1]);
-            if (!adjacentTiles.isEmpty()) {
-                int[] randomTile = adjacentTiles.get(rng.nextInt(adjacentTiles.size()));
-                swap(emptyPos[0], emptyPos[1], randomTile[0], randomTile[1]);
+            int[] blankPos = findBlankTile();
+            if (blankPos != null) {
+                List<int[]> adjacentTiles = getAdjacentTiles(blankPos[0], blankPos[1]);
+                if (!adjacentTiles.isEmpty()) {
+                    int[] randomTile = adjacentTiles.get(rng.nextInt(adjacentTiles.size()));
+                    swapTiles(blankPos[0], blankPos[1], randomTile[0], randomTile[1]);
+                }
             }
         }
     }
 
-    private List<int[]> getAdjacentTiles(int emptyRow, int emptyCol) {
-        int[][] adjacentPositions = getAdjacentPositions(emptyRow, emptyCol);
+    private List<int[]> getAdjacentTiles(int blankRow, int blankCol) {
+        int[][] adjacentPositions = getAdjacentPositions(blankRow, blankCol);
         List<int[]> adjacent = new ArrayList<>();
         for (int[] pos : adjacentPositions) {
             adjacent.add(pos);
@@ -67,22 +87,34 @@ public class SlidingPuzzleBoard implements Board {
     public boolean trySlideTile(int value) {
         if (value <= 0 || value >= rows * cols)
             return false;
-        int[] t = find(value);
-        int[] e = find(0);
-        if (t == null || e == null)
+        int[] tilePos = findTile(value);
+        int[] blankPos = findBlankTile();
+        if (tilePos == null || blankPos == null)
             return false;
-        if (isAdjacent(t[0], t[1], e[0], e[1])) {
-            swap(t[0], t[1], e[0], e[1]);
+        if (isAdjacent(tilePos[0], tilePos[1], blankPos[0], blankPos[1])) {
+            swapTiles(tilePos[0], tilePos[1], blankPos[0], blankPos[1]);
             return true;
         }
         return false;
     }
 
-    private int[] find(int v) {
-        for (int r = 0; r < rows; r++)
-            for (int c = 0; c < cols; c++)
-                if (grid[r][c] == v)
+    private int[] findTile(int value) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c].getValue() == value)
                     return new int[] { r, c };
+            }
+        }
+        return null;
+    }
+
+    private int[] findBlankTile() {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (((Tile) grid[r][c]).isBlank())
+                    return new int[] { r, c };
+            }
+        }
         return null;
     }
 
@@ -90,22 +122,24 @@ public class SlidingPuzzleBoard implements Board {
         return areAdjacent(r1, c1, r2, c2);
     }
 
-    private void swap(int r1, int c1, int r2, int c2) {
-        int tmp = grid[r1][c1];
+    private void swapTiles(int r1, int c1, int r2, int c2) {
+        Tile tmp = grid[r1][c1];
         grid[r1][c1] = grid[r2][c2];
         grid[r2][c2] = tmp;
     }
 
     @Override
     public boolean isSolved() {
-        int k = 1;
+        int expectedValue = 1;
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
+                Tile tile = grid[r][c];
                 if (r == rows - 1 && c == cols - 1) {
-                    return grid[r][c] == 0;
+                    return tile.isBlank();
                 }
-                if (grid[r][c] != k++)
+                if (tile.getValue() != expectedValue++) {
                     return false;
+                }
             }
         }
         return true;
@@ -120,10 +154,11 @@ public class SlidingPuzzleBoard implements Board {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 sb.append("|");
-                if (grid[r][c] == 0) {
+                Tile tile = grid[r][c];
+                if (tile.isBlank()) {
                     sb.append(String.format("%" + cellWidth + "s", " "));
                 } else {
-                    sb.append(String.format("%" + cellWidth + "d", grid[r][c]));
+                    sb.append(String.format("%" + cellWidth + "d", tile.getValue()));
                 }
             }
             sb.append("|\n");

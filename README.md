@@ -10,30 +10,36 @@
 
 App.java: Main entry point that starts the sliding puzzle game with a Scanner for user input.
 
-Board.java: Board is an interface that defines common board operations like dimensions, adjacency checking, and validation for checking if game is solved.
+Board.java: Board interface defines common board operations like dimensions, piece management, adjacency checking, and validation for checking if game is solved. Now supports object-based pieces instead of primitive values.
 
-BoardGame.java: This is the abstract base class implementing a template for board games with functionality for game looping, counting moves, and replay.
+BoardGame.java: Abstract base class implementing the Template Method pattern for board games with functionality for game looping, move counting, and replay capabilities.
+
+Piece.java: Abstract base class representing game pieces with value, ownership, and movement capabilities. Provides extensible foundation for different game piece types.
+
+Tile.java: Concrete implementation of Piece specifically for sliding puzzle tiles, supporting numbered tiles and blank tiles with appropriate movement validation.
 
 Player.java: Handles player information and input operations, providing a clean abstraction for user interaction.
 
-SlidingPuzzleBoard.java: Implementation of the sliding puzzle board with tile management, shuffling the board, and validating moves.
+SlidingPuzzleBoard.java: Implementation of the sliding puzzle board using Tile objects instead of primitive integers. Includes size constants, tile management, shuffling algorithms, and move validation with object-oriented design.
 
-SlidingPuzzleGame.java: Sliding puzzle specific game logic extending BoardGame with setup, move parsing, and special commands like shuffle.
+SlidingPuzzleGame.java: Sliding puzzle specific game logic extending BoardGame with setup, move parsing, and special commands like shuffle. Uses constants from SlidingPuzzleBoard for size validation.
 
 ## Notes
 ---------------------------------------------------------------------------
 
 Design Choices: 
 
-- Applied encapsulation principles as each class has clear responsibilities with private fields and a controlled system of access through public methods. SlidingPuzzleBoard encapsulates the state of the grid and any tile operations, while Player encapsulates input handling. 
+- Applied encapsulation principles with each class having clear responsibilities and controlled access through public methods. SlidingPuzzleBoard encapsulates tile state using Tile objects instead of primitive integers, while Player encapsulates input handling. 
 
-- Inheritance was used through a template method of BoardGame being an abstract class, and subclasses like SlidingPuzzleGame can be applied on top to customize specific behaviors.
+- Inheritance hierarchy implemented with Piece as abstract base class and Tile as concrete implementation, allowing for extensible game piece types. BoardGame uses Template Method pattern enabling subclasses like SlidingPuzzleGame to customize specific behaviors.
 
-- Polymorphism applied through the Board interface which enables different board implementations for different types of games. The BoardGame class works with any Board implementation without knowing the specific type. 
+- Polymorphism applied through Board interface supporting different board implementations and Piece hierarchy allowing different game piece behaviors. BoardGame works with any Board implementation without knowing the specific type. 
 
-- Abstraction layers help with seperating concerns, where Plyaer abstracts all the input handling, and Board abstracts all board operations, etc. making each component independently testable. 
+- Abstraction layers separate concerns: Player abstracts input handling, Board abstracts board operations, Piece abstracts game element behavior, and BoardGame abstracts game flow, making each component independently testable and reusable.
 
-- These design choices enable the easy creation of new board games by just extending BoardGame and implementing Board on other games like Tic-Tac-Toe for example. 
+- Object-oriented design eliminates hardcoded values by using constants (MIN_SIZE, MAX_SIZE) and replacing primitive int[][] with Tile[][] for better type safety and extensibility.
+
+- These design choices enable easy creation of new board games by extending BoardGame, implementing Board, and creating specific Piece subclasses (e.g., for Dots and Boxes, Tic-Tac-Toe, etc.). 
 
 Cool Features / Creative Choices: 
 

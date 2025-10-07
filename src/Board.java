@@ -5,6 +5,10 @@ public interface Board {
 
     boolean isSolved();
 
+    Piece getPieceAt(int row, int col);
+
+    void setPieceAt(int row, int col, Piece piece);
+
     default boolean isValidPosition(int row, int col) {
         return row >= 0 && row < rows() && col >= 0 && col < cols();
     }

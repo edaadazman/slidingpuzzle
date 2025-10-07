@@ -29,8 +29,10 @@ public class SlidingPuzzleGame extends BoardGame {
             player.setName(nameIn);
         }
 
-        int r = getValidSize("Enter number of rows (2-10): ");
-        int c = getValidSize("Enter number of cols (2-10): ");
+        int r = getValidSize(
+                "Enter number of rows (" + SlidingPuzzleBoard.MIN_SIZE + "-" + SlidingPuzzleBoard.MAX_SIZE + "): ");
+        int c = getValidSize(
+                "Enter number of cols (" + SlidingPuzzleBoard.MIN_SIZE + "-" + SlidingPuzzleBoard.MAX_SIZE + "): ");
 
         this.board = new SlidingPuzzleBoard(r, c);
         System.out.println("Good luck, " + player.getName() + "!");
@@ -44,10 +46,11 @@ public class SlidingPuzzleGame extends BoardGame {
             }
             try {
                 int value = Integer.parseInt(input);
-                if (value >= 2 && value <= 10) {
+                if (value >= SlidingPuzzleBoard.MIN_SIZE && value <= SlidingPuzzleBoard.MAX_SIZE) {
                     return value;
                 }
-                System.out.println("Please enter an integer between 2 and 10.");
+                System.out.println("Please enter an integer between " +
+                        SlidingPuzzleBoard.MIN_SIZE + " and " + SlidingPuzzleBoard.MAX_SIZE + ".");
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
             }

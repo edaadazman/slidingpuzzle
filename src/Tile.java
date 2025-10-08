@@ -1,5 +1,9 @@
+/**
+ * Concrete implementation of Piece for sliding puzzle tiles.
+ * Supports both numbered tiles and blank tiles with movement validation.
+ */
 public class Tile extends Piece {
-    private final boolean isBlank;
+    private final boolean isBlank;  // Whether this tile is the blank space
 
     public Tile(int value) {
         super(value);

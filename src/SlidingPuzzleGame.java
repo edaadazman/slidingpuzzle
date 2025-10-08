@@ -1,3 +1,7 @@
+/**
+ * Game implementation for sliding puzzle.
+ * Manages single-player sliding puzzle gameplay.
+ */
 public class SlidingPuzzleGame extends BoardGame {
     private SlidingPuzzleBoard board;
 
@@ -35,7 +39,8 @@ public class SlidingPuzzleGame extends BoardGame {
         this.board = new SlidingPuzzleBoard(r, c);
         System.out.println("Good luck, " + getCurrentPlayer().getName() + "!");
     }
-
+    
+    // Get a valid board size from the player
     private int getValidSize(String prompt) {
         while (true) {
             String input = getCurrentPlayer().getInput(prompt);

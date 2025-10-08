@@ -1,4 +1,11 @@
+/**
+ * Represents an edge in the dots and boxes game.
+ * Edges can be horizontal or vertical and can be claimed by players.
+ */
 public class Edge extends Piece {
+    /**
+     * Enumeration of edge types.
+     */
     public enum EdgeType {
         HORIZONTAL('H'),
         VERTICAL('V');
@@ -12,7 +19,8 @@ public class Edge extends Piece {
         public char getSymbol() {
             return symbol;
         }
-
+        
+        // Get edge type from character
         public static EdgeType fromChar(char c) {
             char upperC = Character.toUpperCase(c);
             for (EdgeType type : values()) {
@@ -24,6 +32,9 @@ public class Edge extends Piece {
         }
     }
 
+    /**
+     * Represents a move to claim an edge.
+     */
     public static class EdgeMove {
         private final EdgeType type;
         private final int row;

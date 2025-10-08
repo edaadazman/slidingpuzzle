@@ -1,5 +1,9 @@
 import java.util.*;
 
+/**
+ * Board implementation for dots and boxes game.
+ * Manages edges, boxes, and scoring for two-player gameplay.
+ */
 public class DotsAndBoxesBoard implements Board {
     private final int rows;
     private final int cols;

@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+/**
+ * Terminal-based menu system for game selection.
+ * Handles user input and launches the selected game.
+ */
 public class GameMenu {
     private final Scanner scanner;
 
@@ -7,6 +11,9 @@ public class GameMenu {
         this.scanner = scanner;
     }
 
+    /**
+     * Display the game selection menu.
+     */
     public void displayMenu() {
         System.out.println("\n=== Game Selection Menu ===");
         System.out.println("1. Sliding Puzzle");
@@ -15,6 +22,7 @@ public class GameMenu {
         System.out.print("Enter your choice (1-3): ");
     }
 
+    // Get a valid menu choice from the user
     public int getMenuChoice() {
         while (true) {
             displayMenu();
@@ -31,6 +39,9 @@ public class GameMenu {
         }
     }
 
+    /**
+     * Main game loop that handles menu selection and game launching.
+     */
     public void runGameLoop() {
         System.out.println("Welcome to the Game Collection!");
 
@@ -53,6 +64,9 @@ public class GameMenu {
         }
     }
 
+    /**
+     * Launch the sliding puzzle game.
+     */
     private void runSlidingPuzzle() {
         System.out.println("\nStarting Sliding Puzzle...");
         Player player = new Player(scanner);
@@ -60,6 +74,9 @@ public class GameMenu {
         game.run();
     }
 
+    /**
+     * Launch the dots and boxes game.
+     */
     private void runDotsAndBoxes() {
         System.out.println("\nStarting Dots and Boxes...");
         Player player1 = new Player(scanner);

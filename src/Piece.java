@@ -1,14 +1,24 @@
+/**
+ * Abstract base class for game pieces.
+ * Provides common functionality for value, ownership, and movement validation.
+ */
 public abstract class Piece {
     protected final int value;
     protected String owner;
     protected boolean isEmpty;
 
+    /**
+     * Constructor for pieces without owner.
+     */
     protected Piece(int value) {
         this.value = value;
         this.owner = null;
         this.isEmpty = (value == 0);
     }
 
+    /**
+     * Constructor for pieces with owner.
+     */
     protected Piece(int value, String owner) {
         this.value = value;
         this.owner = owner;

@@ -1,3 +1,7 @@
+/**
+ * Abstract base class for all board games.
+ * Implements the template method pattern for consistent game flow.
+ */
 public abstract class BoardGame {
     protected final java.util.List<Player> players;
     protected int currentPlayerIndex;
@@ -21,9 +25,12 @@ public abstract class BoardGame {
         this.moveCount = 0;
     }
 
+    // Abstract methods that must be implemented by concrete game classes
     protected abstract Board getBoard();
-
     protected abstract void setup();
+    protected abstract Integer parseMove(String token);
+    protected abstract boolean applyMove(int tile);
+    protected abstract boolean handleSpecialCommand(String command);
 
     // Player management methods
     protected Player getCurrentPlayer() {
@@ -50,12 +57,6 @@ public abstract class BoardGame {
     protected void handlePlayerSwitch() {
         switchToNextPlayer();
     }
-
-    protected abstract Integer parseMove(String token);
-
-    protected abstract boolean applyMove(int tile);
-
-    protected abstract boolean handleSpecialCommand(String command);
 
     protected String getWelcomeMessage() {
         return "Welcome to the game!";
@@ -91,6 +92,10 @@ public abstract class BoardGame {
         return "Would you like to play again? (yes/no): ";
     }
 
+    /**
+     * Main game loop implementing the template method pattern.
+     * Handles setup, gameplay, and replay functionality.
+     */
     public final void run() {
         boolean playAgain = true;
 
@@ -101,6 +106,7 @@ public abstract class BoardGame {
             System.out.println(getInstructions() + "\n");
             System.out.println(getBoard().toString());
 
+            // Main game loop
             while (!getBoard().isSolved()) {
                 String line = getCurrentPlayer().getInput(getInputPrompt());
                 if (line == null) {
@@ -111,11 +117,13 @@ public abstract class BoardGame {
                     return;
                 }
 
+                // Handle special commands (like shuffle)
                 if (handleSpecialCommand(line)) {
                     System.out.println(getBoard().toString());
                     continue;
                 }
 
+                // Parse and apply the move
                 Integer tile = parseMove(line);
                 if (tile == null) {
                     System.out.println(getInvalidInputMessage());
@@ -134,6 +142,7 @@ public abstract class BoardGame {
                 System.out.println(getBoard().toString());
             }
 
+            // Handle game completion
             if (getBoard().isSolved()) {
                 System.out.println(getVictoryMessage());
                 String response = getCurrentPlayer().getInput(getPlayAgainPrompt());

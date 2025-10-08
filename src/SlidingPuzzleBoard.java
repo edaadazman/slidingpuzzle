@@ -1,5 +1,9 @@
 import java.util.*;
 
+/**
+ * Board implementation for sliding puzzle game.
+ * Uses 2D array of tiles with smart shuffling and efficient movement.
+ */
 public class SlidingPuzzleBoard implements Board {
     public static final int MIN_SIZE = 2;
     public static final int MAX_SIZE = 10;
@@ -61,6 +65,10 @@ public class SlidingPuzzleBoard implements Board {
         grid[rows - 1][cols - 1] = Tile.createBlankTile();
     }
 
+    /**
+     * Shuffle the board using legal moves to guarantee solvability.
+     * Performs 100 random legal moves from the solved state.
+     */
     public void shuffle() {
         Random rng = new Random();
         for (int i = 0; i < 100; i++) {

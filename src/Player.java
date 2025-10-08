@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+/**
+ * Represents a player in the game with name and input handling capabilities.
+ * Manages player information and provides methods for user input validation.
+ */
 public class Player {
     private String name;
     protected final Scanner input;
@@ -24,6 +28,7 @@ public class Player {
         }
     }
 
+    // Get input from the player with a prompt
     public String getInput(String prompt) {
         System.out.print(prompt);
         if (!input.hasNextLine()) {

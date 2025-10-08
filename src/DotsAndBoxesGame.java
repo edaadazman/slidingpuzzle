@@ -1,10 +1,14 @@
 import java.util.*;
 import java.util.Arrays;
 
+/**
+ * Game implementation for dots and boxes.
+ * Manages two-player gameplay with scoring and turn management.
+ */
 public class DotsAndBoxesGame extends BoardGame {
     private DotsAndBoxesBoard dotsBoard;
     private List<String> playerNames;
-    private boolean currentPlayerScored;
+    private boolean currentPlayerScored;  // Whether current player scored (gets another turn)
 
     public DotsAndBoxesGame(Player player1, Player player2) {
         super(Arrays.asList(player1, player2));
@@ -98,13 +102,13 @@ public class DotsAndBoxesGame extends BoardGame {
             return false;
         }
 
-        // Get scores before the move
+        // Get scores before the move to check if player scored
         String currentPlayerName = getCurrentPlayer().getName();
         Map<String, Integer> scoresBefore = dotsBoard.getScores();
         int playerScoreBefore = scoresBefore.get(currentPlayerName);
 
         if (dotsBoard.claimEdge(lastParsedMove, currentPlayerName)) {
-            // Check if player scored
+            // Check if player scored (completed boxes)
             Map<String, Integer> scoresAfter = dotsBoard.getScores();
             int playerScoreAfter = scoresAfter.get(currentPlayerName);
 
@@ -166,6 +170,7 @@ public class DotsAndBoxesGame extends BoardGame {
     @Override
     protected void handlePlayerSwitch() {
         // Only switch players if the current player didn't score
+        // Players who complete boxes get another turn
         if (!currentPlayerScored) {
             switchToNextPlayer();
         }

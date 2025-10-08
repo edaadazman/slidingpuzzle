@@ -23,14 +23,14 @@
 
 `Piece.java` — Abstract base class for game pieces with value, ownership, and movement capabilities.
 
-`Tile.java` — Concrete implementation of Piece for sliding puzzle tiles. Supports numbered tiles and blank tiles with movement validation.
-
 `Player.java` — Manages player information including name, scoring, and input handling. Serves as an input handler using Scanner for user interaction.
 
 ### Sliding Puzzle Implementation
 `SlidingPuzzleGame.java` — Game implementation extending BoardGame for sliding puzzle gameplay. Manages single-player game flow, setup, and move processing.
 
 `SlidingPuzzleBoard.java` — Board implementation for sliding puzzle using 2D Tile array. Supports sizes 2x2 through 10x10, legal-move shuffle from solved state, and efficient tile movement with adjacency checking.
+
+`Tile.java` — Concrete implementation of Piece for sliding puzzle tiles. Supports numbered tiles and blank tiles with movement validation.
 
 ### Dots and Boxes Implementation  
 `DotsAndBoxesGame.java` — Game implementation for two-player Dots and Boxes gameplay.
@@ -81,7 +81,7 @@
    ```bash
    $ mkdir -p out
    $ javac -d out $(find src -name "*.java")
-   '//try if above does not work'
+   # try if above does not work
    $ javac -d out src/*.java   
    ```
 
@@ -102,4 +102,190 @@
 ## Input/Output Example
 ---------------------------------------------------------------------------
 
+```text
+Output: 
+Welcome to the Game Collection!
+
+=== Game Selection Menu ===
+1. Sliding Puzzle
+2. Dots and Boxes
+3. Exit
+Enter your choice (1-3): 
+
+Input:
+2
+
+Output: 
+Starting Dots and Boxes...
+Welcome to the game!
+Welcome to Dots and Boxes!
+Enter number of rows (2-10): 
+
+Input:
+2
+
+Output: 
+Enter number of columns (2-10): 
+
+Input:
+2
+
+Output: 
+Enter name for Player 1: 
+
+Input:
+Alice
+
+Output: 
+Enter name for Player 2: 
+
+Input:
+Bob
+
+Output: 
+Enter moves as: [H/V] [row] [col]
+H = Horizontal edge, V = Vertical edge
+Example: 'H 0 1' claims horizontal edge at row 0, col 1
+Complete boxes to score points! Player with most boxes wins!
+
+
+Current Board:
+  0 1 2 
+0 · · ·
+       
+1 · · ·
+       
+2 · · ·
+
+Scores:
+Alice: 0
+Bob: 0
+
+
+Alice's turn - Enter your move (H/V row col) or 'quit': 
+
+Input:
+H 0 0
+
+Output: 
+Current Board:
+  0 1 2 
+0 ·-· ·
+       
+1 · · ·
+       
+2 · · ·
+
+Scores:
+Alice: 0
+Bob: 0
+
+
+Bob's turn - Enter your move (H/V row col) or 'quit': 
+
+Input:
+V 0 0
+
+Output: 
+Current Board:
+  0 1 2 
+0 ·-· ·
+  |    
+1 · · ·
+       
+2 · · ·
+
+Scores:
+Alice: 0
+Bob: 0
+
+
+Alice's turn - Enter your move (H/V row col) or 'quit': 
+
+Input:
+H 0 1
+
+Output: 
+Current Board:
+  0 1 2 
+0 ·-·-·
+  |    
+1 · · ·
+       
+2 · · ·
+
+Scores:
+Alice: 0
+Bob: 0
+
+
+[...]
+Some turns later
+[...]
+
+Output: 
+Alice's turn - Enter your move (H/V row col) or 'quit': 
+
+Input:
+H 1 1
+
+Output: 
+Alice completed 1 box(es)! Go again!
+
+Current Board:
+  0 1 2 
+0 ·-·-·
+  | |A|
+1 · ·-·
+    |  
+2 · · ·
+
+Scores:
+Alice: 1
+Bob: 0
+
+[...]
+Some turns later
+[...]
+
+Output:
+Current Board:
+  0 1 2 
+0 ·-·-·
+  |A|A|
+1 ·-·-·
+  |B|A|
+2 ·-·-·
+
+Scores:
+Alice: 3
+Bob: 1
+
+
+Game Over!
+Winner: Alice!
+
+Final Scores:
+Alice: 3
+Bob: 1
+
+Would you like to play again? (yes/no): 
+
+Input:
+no
+
+Output: 
+Thanks for playing! Goodbye!
+
+=== Game Selection Menu ===
+1. Sliding Puzzle
+2. Dots and Boxes
+3. Exit
+Enter your choice (1-3): 
+
+Input:
+3
+
+Output: 
+Thanks for playing! Goodbye!
 ```

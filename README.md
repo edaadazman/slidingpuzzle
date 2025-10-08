@@ -1,704 +1,105 @@
-# CS611-Assignment 1
-## Sliding Puzzle
+# CS611-Assignment 2
+## Dots and Boxes
 ---------------------------------------------------------------------------
 - Name: Edaad Azman
 - Email: edaad@bu.edu
 - Student ID: U38459100
 
+- Name: Saksham Goel
+- Email: sakshamg@bu.edu
+- Student ID: U45400025
+
 ## Files
 ---------------------------------------------------------------------------
 
-App.java: Main entry point that starts the sliding puzzle game with a Scanner for user input.
+### Core Classes
+`App.java` — Main application entry point that launches the game menu system.
 
-Board.java: Board interface defines common board operations like dimensions, piece management, adjacency checking, and validation for checking if game is solved. Now supports object-based pieces instead of primitive values.
+`GameMenu.java` — Terminal-based menu system for game selection between Sliding Puzzle and Dots and Boxes.
 
-BoardGame.java: Abstract base class implementing the Template Method pattern for board games with functionality for game looping, move counting, and replay capabilities.
+`BoardGame.java` — Abstract base class implementing the template method pattern for all board games. Handles the main game flow including setup, game loop, input processing, and replay functionality.
 
-Piece.java: Abstract base class representing game pieces with value, ownership, and movement capabilities. Provides extensible foundation for different game piece types.
+`Board.java` — Generic interface defining common board operations like dimensions, piece management, and solved state checking.
 
-Tile.java: Concrete implementation of Piece specifically for sliding puzzle tiles, supporting numbered tiles and blank tiles with appropriate movement validation.
+`Piece.java` — Abstract base class for game pieces with value, ownership, and movement capabilities.
 
-Player.java: Handles player information and input operations, providing a clean abstraction for user interaction.
+`Tile.java` — Concrete implementation of Piece for sliding puzzle tiles. Supports numbered tiles and blank tiles with movement validation.
 
-SlidingPuzzleBoard.java: Implementation of the sliding puzzle board using Tile objects instead of primitive integers. Includes size constants, tile management, shuffling algorithms, and move validation with object-oriented design.
+`Player.java` — Manages player information including name, scoring, and input handling. Serves as an input handler using Scanner for user interaction.
 
-SlidingPuzzleGame.java: Sliding puzzle specific game logic extending BoardGame with setup, move parsing, and special commands like shuffle. Uses constants from SlidingPuzzleBoard for size validation.
+### Sliding Puzzle Implementation
+`SlidingPuzzleGame.java` — Game implementation extending BoardGame for sliding puzzle gameplay. Manages single-player game flow, setup, and move processing.
+
+`SlidingPuzzleBoard.java` — Board implementation for sliding puzzle using 2D Tile array. Supports sizes 2x2 through 10x10, legal-move shuffle from solved state, and efficient tile movement with adjacency checking.
+
+### Dots and Boxes Implementation  
+`DotsAndBoxesGame.java` — Game implementation for two-player Dots and Boxes gameplay.
+
+`DotsAndBoxesBoard.java` — Board implementation using efficient 2D arrays for edge states and box ownership.
+
+`Box.java` — Represents a box formed by four edges. Tracks edge completion status and handles automatic claiming when all four edges are completed by players.
+
+`Edge.java` — Represents edges between dots that can be claimed by players. Supports both horizontal and vertical orientations with position tracking and adjacency checking.
 
 ## Notes
 ---------------------------------------------------------------------------
 
-Design Choices: 
+### Design Choices:
 
-- Applied encapsulation principles with each class having clear responsibilities and controlled access through public methods. SlidingPuzzleBoard encapsulates tile state using Tile objects instead of primitive integers, while Player encapsulates input handling. 
+- **Template Method Pattern**: The abstract BoardGame class provides a consistent framework for all board games, allowing easy extension for new game types while maintaining uniform game flow and user experience.
 
-- Inheritance hierarchy implemented with Piece as abstract base class and Tile as concrete implementation, allowing for extensible game piece types. BoardGame uses Template Method pattern enabling subclasses like SlidingPuzzleGame to customize specific behaviors.
+- **Separation of Concerns**: Clear separation between CLI handling (App, GameMenu), core game framework (BoardGame, Board, Piece), and specific game logic (SlidingPuzzleGame, DotsAndBoxesGame).
 
-- Polymorphism applied through Board interface supporting different board implementations and Piece hierarchy allowing different game piece behaviors. BoardGame works with any Board implementation without knowing the specific type. 
+- **Polymorphic Design**: The Board interface allows different board implementations, making the system extensible for various grid-based games beyond sliding puzzle and dots and boxes.
 
-- Abstraction layers separate concerns: Player abstracts input handling, Board abstracts board operations, Piece abstracts game element behavior, and BoardGame abstracts game flow, making each component independently testable and reusable.
+- **Encapsulation**: Each class has clear responsibilities with controlled access through public methods. SlidingPuzzleBoard encapsulates game state, Player handles input, and BoardGame manages flow.
 
-- Object-oriented design eliminates hardcoded values by using constants (MIN_SIZE, MAX_SIZE) and replacing primitive int[][] with Tile[][] for better type safety and extensibility.
+### Cool Features / Creative Choices:
 
-- These design choices enable easy creation of new board games by extending BoardGame, implementing Board, and creating specific Piece subclasses (e.g., for Dots and Boxes, Tic-Tac-Toe, etc.). 
+- **Smart Shuffling**: SlidingPuzzleBoard uses legal-move shuffling from solved state to guarantee puzzle solvability, preventing impossible configurations.
 
-Cool Features / Creative Choices: 
+- **Efficient Movement**: Board caches blank tile position and uses adjacency checking for fast, valid move validation.
 
-- Automatic move counting with display in victory message to show player performance. This feature is very nice to have for the player to see how many moves it took them to complete the board and can therefore keep a "score" in some form. 
+- **Flexible Sizing**: Supports board sizes from 2x2 up to 10x10 with proper validation and error handling.
 
-- Added "shuffle" command during gameplay to reshuffle the current board without restarting. I noticed that some boards can often get frustrating and feels almost unsolvable, so adding this feature helped sort of get some "help" when those situations come. 
+- **Clean UI**: Terminal-based interface with clear visual representation of the puzzle state and intuitive tile-value input system.
 
-- A creative choice I made to ensure that a board is always solvable was to use valid moves from a solved board, rather than just random arrangement.
+- **Extensible Architecture**: Game collection menu system allows easy addition of new games through the BoardGame framework.
+
 
 
 ## How to compile and run
 ---------------------------------------------------------------------------
 
-1. Download all .java files and place them in the directory /slidingpuzzle/src 
-2. Navigate to the root "slidingpuzzle" directory and open the terminal
-3. Run the following instructions:
-```
-javac src/*.java
-cd src
-java App
-```
+### Compilation
+1. Navigate to the project directory:
+   ```bash
+   $ cd dots-and-boxes
+   ```
+
+2. Compile all Java files into ./out:
+   ```bash
+   $ mkdir -p out
+   $ javac -d out $(find src -name "*.java")
+   '//try if above does not work'
+   $ javac -d out src/*.java   
+   ```
+
+
+### Running the Application
+1. Run the main application:
+   ```bash
+   $ java -cp out App   
+   ```
+
+2. Follow the on-screen prompts to:
+   - Choose between available games
+   - Set up player names
+   - Play the game
+   - Choose to play again or exit
+
 
 ## Input/Output Example
-```
 ---------------------------------------------------------------------------
-INPUT: java App
 
-OUTPUT:
-Welcome to the Sliding Puzzle Game! Arrange the numbered tiles such that tiles are ordered from least to greatest from top left to bottom right.
-Enter your name: 
-
-INPUT: Edaad
-
-OUTPUT:
-Enter number of rows (2-10): 
-
-INPUT: 3
-
-OUTPUT:
-Enter number of cols (2-10): 
-
-INPUT: 3
-
-OUTPUT: 
-Good luck, Edaad!
-Enter the number of the tile you want to move. Type 'shuffle' to reshuffle the board. Enter 'quit' to exit.
-
-|  1|  3|  7|
-+---+---+---+
-|  4|  6|  2|
-+---+---+---+
-|   |  5|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  3|  7|
-+---+---+---+
-|  4|  6|  2|
-+---+---+---+
-|  5|   |  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  3|  7|
-+---+---+---+
-|  4|   |  2|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 3
-
-OUTPUT: 
-|  1|   |  7|
-+---+---+---+
-|  4|  3|  2|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  7|   |
-+---+---+---+
-|  4|  3|  2|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 2
-
-OUTPUT: 
-|  1|  7|  2|
-+---+---+---+
-|  4|  3|   |
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 3
-
-OUTPUT: 
-|  1|  7|  2|
-+---+---+---+
-|  4|   |  3|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|   |  2|
-+---+---+---+
-|  4|  7|  3|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 2
-
-OUTPUT: 
-|  1|  2|   |
-+---+---+---+
-|  4|  7|  3|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 3
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  7|   |
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  7|  8|
-+---+---+---+
-|  5|  6|   |
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  7|  8|
-+---+---+---+
-|  5|   |  6|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|   |  8|
-+---+---+---+
-|  5|  7|  6|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  8|   |
-+---+---+---+
-|  5|  7|  6|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  8|  6|
-+---+---+---+
-|  5|  7|   |
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  8|  6|
-+---+---+---+
-|  5|   |  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  8|  6|
-+---+---+---+
-|   |  5|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|   |  8|  6|
-+---+---+---+
-|  4|  5|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  8|   |  6|
-+---+---+---+
-|  4|  5|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  8|  5|  6|
-+---+---+---+
-|  4|   |  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  8|  5|  6|
-+---+---+---+
-|   |  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|   |  5|  6|
-+---+---+---+
-|  8|  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|   |  6|
-+---+---+---+
-|  8|  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  4|  6|
-+---+---+---+
-|  8|   |  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  4|  6|
-+---+---+---+
-|  8|  7|   |
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  4|   |
-+---+---+---+
-|  8|  7|  6|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|   |  4|
-+---+---+---+
-|  8|  7|  6|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  7|  4|
-+---+---+---+
-|  8|   |  6|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  7|  4|
-+---+---+---+
-|  8|  6|   |
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  7|   |
-+---+---+---+
-|  8|  6|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|   |  7|
-+---+---+---+
-|  8|  6|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|   |  5|  7|
-+---+---+---+
-|  8|  6|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  8|  5|  7|
-+---+---+---+
-|   |  6|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  8|  5|  7|
-+---+---+---+
-|  6|   |  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  8|   |  7|
-+---+---+---+
-|  6|  5|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|   |  8|  7|
-+---+---+---+
-|  6|  5|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  6|  8|  7|
-+---+---+---+
-|   |  5|  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  6|  8|  7|
-+---+---+---+
-|  5|   |  4|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  6|  8|  7|
-+---+---+---+
-|  5|  4|   |
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  6|  8|   |
-+---+---+---+
-|  5|  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  6|   |  8|
-+---+---+---+
-|  5|  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|   |  6|  8|
-+---+---+---+
-|  5|  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-|   |  4|  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-|  4|   |  7|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  6|  8|
-+---+---+---+
-|  4|  7|   |
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|  6|   |
-+---+---+---+
-|  4|  7|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 6
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  5|   |  6|
-+---+---+---+
-|  4|  7|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 5
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|   |  5|  6|
-+---+---+---+
-|  4|  7|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 4
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  5|  6|
-+---+---+---+
-|   |  7|  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 7
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  5|  6|
-+---+---+---+
-|  7|   |  8|
-+---+---+---+
-
-Enter your move, 'shuffle', or 'quit': 
-
-INPUT: 8
-
-OUTPUT: 
-|  1|  2|  3|
-+---+---+---+
-|  4|  5|  6|
-+---+---+---+
-|  7|  8|   |
-+---+---+---+
-
-Congratulations! You won in 50 moves!
-Would you like to play again? (yes/no): 
-
-INPUT: no
-
-OUTPUT: 
-Thanks for playing! Goodbye!
 ```
